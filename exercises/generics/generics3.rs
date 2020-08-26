@@ -4,11 +4,8 @@
 // However, the school also issues alphabetical grades (A+ -> F-) and needs
 // to be able to print both types of report card!
 
-// Make the necessary code changes in the struct ReportCard and the impl block 
-// to support alphabetical report cards. Change the Grade in the second test to "A+" 
-// to show that your changes allow alphabetical grades.
-
-// Execute 'rustlings hint generics3' for hints!
+// Make the necessary code changes to support alphabetical report cards, thereby making
+// the second test pass.
 
 // I AM NOT DONE
 
