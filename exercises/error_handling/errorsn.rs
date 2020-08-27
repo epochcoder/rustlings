@@ -17,19 +17,32 @@
 //
 // Execute `rustlings hint errorsn` for hints :)
 
-// I AM NOT DONE
-
 use std::error;
 use std::fmt;
 use std::io;
 
-// PositiveNonzeroInteger is a struct defined below the tests.
-fn read_and_validate(b: &mut dyn io::BufRead) -> Result<PositiveNonzeroInteger, ???> {
+// Personal note, the following 4 function signatures are the same as it evolved through rust
+// upsides and downsides to each
+// see: https://doc.rust-lang.org/edition-guide/rust-2018/trait-system/impl-trait-for-returning-complex-types-with-ease.html
+
+// fn read_and_validate<T>(b: &mut T) -> Result<PositiveNonzeroInteger, Box<dyn error::Error>> where T: io::BufRead {
+// fn read_and_validate<T: io::BufRead>(b: &mut T) -> Result<PositiveNonzeroInteger, Box<dyn error::Error>> {
+// fn read_and_validate(b: &mut dyn io::BufRead) -> Result<PositiveNonzeroInteger, Box<dyn error::Error>>
+fn read_and_validate(b: &mut impl io::BufRead) -> Result<PositiveNonzeroInteger, Box<dyn error::Error>> {
     let mut line = String::new();
-    b.read_line(&mut line);
-    let num: i64 = line.trim().parse();
-    let answer = PositiveNonzeroInteger::new(num);
-    answer
+    b.read_line(&mut line)?;
+    let num: i64 = line.trim().parse()?;
+
+    // ? calls the From trait automatically, so whatever error
+    // is returned can impl a way to convert to the returned error
+
+    // match PositiveNonzeroInteger::new(num) {
+    //     Ok(answer) => Ok(answer),
+    //     Err(err) => return Err(Box::new(err))
+    // }
+
+    let answer = PositiveNonzeroInteger::new(num)?;
+    Ok(answer)
 }
 
 //
