@@ -10,7 +10,6 @@ struct Person {
     age: usize,
 }
 
-// I AM NOT DONE
 // Steps:
 // 1. If the length of the provided string is 0, then return an error
 // 2. Split the given string on the commas present in it
@@ -20,9 +19,33 @@ struct Person {
 //    with something like `"4".parse::<usize>()`.
 // If while parsing the age, something goes wrong, then return an error
 // Otherwise, then return a Result of a Person object
+
 impl FromStr for Person {
     type Err = String;
+
     fn from_str(s: &str) -> Result<Person, Self::Err> {
+        if s.len() == 0 {
+            return Err("Cannot parse from empty string".to_string());
+        }
+
+        let mut parts = s.split(",").into_iter();
+        let name = match parts.next() {
+            Some(n) if n.trim().len() > 0 => n.to_string(),
+            _=> return Err("Name not specified".to_string())
+        };
+
+        let age: usize = match parts.next() {
+            Some(age) => match age.parse() {
+                Ok(age) => age,
+                _ => return Err("Age could not be parsed".to_string())
+            },
+            _ => return Err("Age not specified".to_string())
+        };
+
+        Ok(Person {
+            name,
+            age
+        })
     }
 }
 
@@ -39,6 +62,7 @@ mod tests {
     fn empty_input() {
         assert!("".parse::<Person>().is_err());
     }
+
     #[test]
     fn good_input() {
         let p = "John,32".parse::<Person>();
@@ -47,6 +71,7 @@ mod tests {
         assert_eq!(p.name, "John");
         assert_eq!(p.age, 32);
     }
+
     #[test]
     #[should_panic]
     fn missing_age() {
