@@ -1,15 +1,23 @@
 // This powerful wrapper provides the ability to store a positive integer value.
 // Rewrite it using generics so that it supports wrapping ANY type.
 
-// I AM NOT DONE
-
-struct Wrapper {
-    value: u32,
+struct Wrapper<T: Sized> {
+    value: T,
 }
 
-impl Wrapper {
-    pub fn new(value: u32) -> Self {
+impl<T> Wrapper<T> {
+    fn new(value: T) -> Self {
         Wrapper { value }
+    }
+}
+
+use std::ops::Deref;
+
+impl<T> Deref for Wrapper<T> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.value
     }
 }
 
@@ -20,6 +28,7 @@ mod tests {
     #[test]
     fn store_u32_in_wrapper() {
         assert_eq!(Wrapper::new(42).value, 42);
+        assert_eq!(*Wrapper::new(42), 42);
     }
 
     #[test]
